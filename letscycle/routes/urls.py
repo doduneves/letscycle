@@ -1,8 +1,11 @@
 from django.urls import path
 
-from routes import views
+from routes.views import *
 
 urlpatterns = [
-    path('routes/', views.RouteList.as_view(), name='route-list'),
-    path('routes/<int:pk>/', views.RouteDetail.as_view(), name='route-detail'),
+    path('routes/', RouteList.as_view(), name='route-list'),
+    path('routes/<int:pk>/', RouteDetail.as_view(), name='route-detail'),
+
+    path('coordinates/', CoordinateList.as_view(), name='coordinate-list'),
+    path('coordinates/<int:pk>/', CoordinateDetail.as_view(), name='coordinate-detail'),
 ]

@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
@@ -19,6 +19,25 @@ class Route(models.Model):
     #     return self.rating_set.all()
 
 
+    def create_route_by_polylines(self, coordinates, user):
+        self.name = f'New Created Route - {user}'
+        self.level = 1 if len(coordinates) < 200 else 2 if len(coordinates) < 1000 else 3
+        self.creator = user
+        self.save()
+        self.create_coordinates(coordinates)
+
+
+    @transaction.atomic
+    def create_coordinates(self, route_data):
+        self.coordinate_set.all().delete()
+        for item in route_data:
+            self.coordinate_set.create(
+                latitude = item[0],
+                longitude = item[1],
+            )
+
+
+
 class Location(models.Model):
     city = models.CharField(max_length=255)
     state = models.CharField(max_length=255)
@@ -28,7 +47,7 @@ class Location(models.Model):
 
 
 class Coordinate(models.Model):
-    latitute = models.FloatField()
+    latitude = models.FloatField()
     longitude = models.FloatField()
 
     route = models.ForeignKey(Route, on_delete=models.CASCADE)
