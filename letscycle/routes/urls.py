@@ -8,4 +8,7 @@ urlpatterns = [
 
     path('coordinates/', CoordinateList.as_view(), name='coordinate-list'),
     path('coordinates/<int:pk>/', CoordinateDetail.as_view(), name='coordinate-detail'),
+
+    path('routes/<int:pk>/ratings/', RatingList.as_view(), name='rating-detail'),
+
 ]

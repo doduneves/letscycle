@@ -3,8 +3,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from django.forms.models import model_to_dict
 
-from routes.serializers import RouteSerializer, CoordinateSerializer
-from routes.models import Route, Coordinate
+from routes.serializers import RouteSerializer, CoordinateSerializer, RatingSerializer
+from routes.models import Route, Coordinate, Rating
 
 # Create your views here.
 class RouteList(generics.ListCreateAPIView):
@@ -35,8 +35,6 @@ class RouteList(generics.ListCreateAPIView):
         return response_array
 
 
-
-
 class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Route.objects.all()
     serializer_class = RouteSerializer
@@ -50,3 +48,10 @@ class CoordinateList(generics.ListCreateAPIView):
 class CoordinateDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Coordinate.objects.all()
     serializer_class = CoordinateSerializer
+
+
+class RatingList(generics.ListCreateAPIView):
+    serializer_class = RatingSerializer
+
+    def get_queryset(self):
+        return Rating.objects.filter(route_id=self.kwargs['pk'])

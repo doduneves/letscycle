@@ -1,5 +1,6 @@
-from django.db import models, transaction
 from django.contrib.auth.models import User
+from django.db import models, transaction
+from django.db.models import Avg
 from django.utils.translation import gettext as _
 
 class Route(models.Model):
@@ -14,9 +15,14 @@ class Route(models.Model):
 
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    # @property
-    # def average_rating(self):
-    #     return self.rating_set.all()
+    @property
+    def average_rating(self):
+        ratings = self.rating_set.all().values()
+        rating_sum = 0
+        for r in ratings:
+            rating_sum += float(r['rating'])
+
+        return rating_sum/len(ratings) if len(ratings) > 0 else None
 
 
     def create_route_by_polylines(self, coordinates, user):

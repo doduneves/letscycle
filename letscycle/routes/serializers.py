@@ -15,4 +15,10 @@ class RouteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ['id', 'name', 'level', 'created_at', 'creator', 'coordinates']
+        fields = ['id', 'name', 'level', 'average_rating', 'created_at', 'creator', 'coordinates']
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = ['id', 'rating', 'author', 'route']
