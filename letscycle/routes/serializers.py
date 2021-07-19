@@ -22,3 +22,11 @@ class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
         fields = ['id', 'rating', 'author', 'route']
+        read_only_fields = ['author', 'route']
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'title', 'comment', 'author', 'route']
+        read_only_fields = ['author', 'route']

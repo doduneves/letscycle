@@ -43,7 +43,6 @@ class Route(models.Model):
             )
 
 
-
 class Location(models.Model):
     city = models.CharField(max_length=255)
     state = models.CharField(max_length=255)

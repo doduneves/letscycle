@@ -1,12 +1,35 @@
-from django.shortcuts import render
+from django.db.utils import IntegrityError
+from django.forms.models import model_to_dict
+from django.shortcuts import render, get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
-from django.forms.models import model_to_dict
 
-from routes.serializers import RouteSerializer, CoordinateSerializer, RatingSerializer
-from routes.models import Route, Coordinate, Rating
+from routes.serializers import RouteSerializer, CoordinateSerializer, RatingSerializer, CommentSerializer
+from routes.models import Route, Coordinate, Rating, Comment
 
-# Create your views here.
+class AuthoredListCreateAPIView(generics.ListCreateAPIView):
+    def create(self, request, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            if request.user.is_anonymous:
+                return Response({"errors": "User is not authorized"}, status=status.HTTP_401_UNAUTHORIZED)
+            try:
+                serializer.save(author=request.user, route_id=self.kwargs['route_id'])
+                headers = self.get_success_headers(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+            except IntegrityError as error:
+                return Response({"errors": str(error)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RouteChildListCreateAPIView(generics.ListCreateAPIView):
+    def get_queryset(self):
+        route = get_object_or_404(Route, pk=self.kwargs['route_id'])
+        return self.queryset.filter(route=route)
+
+
 class RouteList(generics.ListCreateAPIView):
     queryset = Route.objects.all()
     serializer_class = RouteSerializer
@@ -19,9 +42,8 @@ class RouteList(generics.ListCreateAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        res = self.create_routes_by_polylines(request.data.get('polyline'),request.user)
+        res = self.create_routes_by_polylines(request.data.get('polyline'), request.user)
         return Response(res, status=status.HTTP_201_CREATED)
-
 
     def create_routes_by_polylines(self, data, user=None):
         response_array = []
@@ -50,8 +72,17 @@ class CoordinateDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CoordinateSerializer
 
 
-class RatingList(generics.ListCreateAPIView):
+class RatingList(AuthoredListCreateAPIView, RouteChildListCreateAPIView):
+    queryset = Rating.objects.all()
     serializer_class = RatingSerializer
 
-    def get_queryset(self):
-        return Rating.objects.filter(route_id=self.kwargs['pk'])
+
+
+class CommentList(AuthoredListCreateAPIView, RouteChildListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
