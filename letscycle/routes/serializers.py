@@ -6,27 +6,27 @@ from .models import *
 
 class CoordinateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Coordinate
-        fields = ['id', 'latitude', 'longitude', 'route']
+        model: Coordinate = Coordinate
+        fields: list = ['id', 'latitude', 'longitude', 'route']
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    coordinates = CoordinateSerializer(source='coordinate_set', many=True)
+    coordinates: QuerySet = CoordinateSerializer(source='coordinate_set', many=True)
 
     class Meta:
-        model = Route
-        fields = ['id', 'name', 'level', 'average_rating', 'created_at', 'creator', 'coordinates']
+        model: Route = Route
+        fields: list = ['id', 'name', 'level', 'average_rating', 'created_at', 'creator', 'coordinates']
 
 
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Rating
-        fields = ['id', 'rating', 'author', 'route']
-        read_only_fields = ['author', 'route']
+        model: Rating = Rating
+        fields: list = ['id', 'rating', 'author', 'route']
+        read_only_fields: list = ['author', 'route']
 
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comment
-        fields = ['id', 'title', 'comment', 'author', 'route']
-        read_only_fields = ['author', 'route']
+        model: Comment = Comment
+        fields: list = ['id', 'title', 'comment', 'author', 'route']
+        read_only_fields: list = ['author', 'route']
