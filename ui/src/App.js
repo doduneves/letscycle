@@ -3,11 +3,14 @@ import { Table, Container, Jumbotron } from 'reactstrap'
 
 import useSWR from 'swr'
 
-export default function Geopressures() {
-  const { data, error } = useSWR('http://localhost:8044/public/routes/')
+const fetcher = (...args) => fetch(...args).then(res => res.json())
 
-  console.log(data)
+export default function Routes() {
+  const { data, error } = useSWR('/public/routes/', fetcher)
 
+  if (!data || error) {
+    return <p>Loading...</p>
+  }
 
   return (
     <>
@@ -15,7 +18,7 @@ export default function Geopressures() {
         <Jumbotron>
           <h1 className="display-3">Lets Cycle</h1>
           <p className="lead">
-            An app for cycle and having fun :)
+            An app for cycling and having fun :)
           </p>
         </Jumbotron>
         <Table striped bordered hover>
@@ -23,9 +26,20 @@ export default function Geopressures() {
             <tr>
               <th>Route Name</th>
               <th>Level</th>
+              <th>Avg Rating</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            {data.map((route, index) => {
+              return (
+                <tr key={index}>
+                  <td>{route.name}</td>
+                  <td>{route.level}</td>
+                  <td>{route.average_rating}</td>
+                </tr>
+              )
+            })}
+          </tbody>
         </Table>
       </Container>
     </>
