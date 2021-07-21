@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML lang="en">
+    <head>
+        <title>Letscycle</title>
+    </head>
+    <body>
+        <h1>Letscycle</h1>
+
+        <table>
+        <tr>
+            <th>Name</th>
+            <th>Level</th>
+            <th>Rating</th>
+            <th>#</th>
+        </tr>
+        {% for route in routes %}
+        <tr>
+            <td><a href="{% url 'route-detail' route.id %}">{{ route.name }}</a></td>
+            <td>{{ route.level }}</td>
+            <td>{{ route.average_rating }}</td>
+            <td></td>
+        </tr>
+        {% endfor %}
+
+    </body>
+</HTML>
