@@ -33,8 +33,12 @@ DATABASES = {
 	}
 }
 ```
+5. Run the migrations!
+```bash
+python letscycle/manage.py migrate
+```
 
-5. Now, you're good to go!
+6. Now, you're good to go!
 ```bash
 python letscycle/manage.py runserver
 ```
