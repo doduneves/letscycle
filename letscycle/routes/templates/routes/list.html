@@ -10,13 +10,13 @@
         <tr>
             <th>Name</th>
             <th>Level</th>
-            <th>Rating</th>
+            <th>Avg Rating</th>
             <th>#</th>
         </tr>
         {% for route in routes %}
         <tr>
             <td><a href="{% url 'route-detail' route.id %}">{{ route.name }}</a></td>
-            <td>{{ route.level }}</td>
+            <td>{{ route.display_level }}</td>
             <td>{{ route.average_rating }}</td>
             <td></td>
         </tr>

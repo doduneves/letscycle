@@ -59,7 +59,7 @@ class RouteList(generics.ListCreateAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        res = self.create_routes_by_polylines(request.data.get('polyline'), request.user)
+        res = self.create_routes_by_polylines(json.loads(request.data.get('polyline')), request.user)
         return Response(res, status=status.HTTP_201_CREATED)
 
 
@@ -82,8 +82,8 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     template_name = 'routes/read.html'
 
     def retrieve(self, request, *args, **kwargs):
-        route = self.get_object()
-        serializer = self.get_serializer(route)
+        route: Route = self.get_object()
+        serializer: ModelSerializer = self.get_serializer(route)
         if request.accepted_renderer.format == 'html':
             return Response({'route': serializer.data }, template_name='routes/read.html')
 
