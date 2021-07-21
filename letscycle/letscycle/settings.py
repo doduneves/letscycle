@@ -79,9 +79,9 @@ WSGI_APPLICATION = 'letscycle.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'letscycle_dev',
-        'USER': 'postgres',
-        'PASSWORD': '',
+        'NAME': <db_name>,
+        'USER': <db_user>,
+        'PASSWORD': <db_password>,
         'HOST': 'localhost',
         'PORT': '5432',
     }
