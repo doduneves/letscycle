@@ -29,10 +29,10 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    coordinates: QuerySet = CoordinateSerializer(source='coordinate_set', many=True)
+    coordinates: QuerySet = CoordinateSerializer(source='coordinate_set', read_only=True, many=True)
     ratings: QuerySet = RatingSerializer(source='rating_set', read_only=True, many=True)
     comments: QuerySet = CommentSerializer(source='comment_set', read_only=True, many=True)
-    creator = serializers.CharField(source="creator.username", read_only=True)
+    creator_name = serializers.CharField(source="creator.username", read_only=True)
     display_level = serializers.CharField(source="get_level_display", read_only=True)
 
     class Meta:
@@ -45,6 +45,7 @@ class RouteSerializer(serializers.ModelSerializer):
             'average_rating',
             'created_at',
             'creator',
+            'creator_name',
             'coordinates',
             'ratings',
             'comments'

@@ -59,6 +59,8 @@ class RouteList(generics.ListCreateAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+        print(serializer.errors)
+
         res = self.create_routes_by_polylines(json.loads(request.data.get('polyline')), request.user)
         return Response(res, status=status.HTTP_201_CREATED)
 
