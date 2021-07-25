@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML lang="en">
+    <head>
+        <title>Letscycle</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+            integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+            crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+        </head>
+    <body>
+        <h1>{{ route.name }}</h1>
+        <p>Level: {{ route.level }}</p>
+        <p>Average Rating: {{ route.average_rating }}</p>
+        <p>Date: {{ route.created_at }}</p>
+
+
+        {% if route.coordinates|length > 0 %}
+            <div id="mapid" style="height: 400px; width: 600px">
+                <script>
+                    let coordinates = []
+
+                        {% for coord in route.coordinates %}
+                            coordinates = coordinates.concat([[{{coord.latitude}},{{coord.longitude}}]])
+                        {% endfor %}
+
+                    let mymap = L.map('mapid');
+
+                    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+                        subdomains: ['a','b','c']
+                    }).addTo(mymap);
+
+                    L.marker(coordinates[0], {title: "Start"}).addTo(mymap);
+                    L.marker(coordinates[coordinates.length-1], {title: "Finish"}).addTo(mymap);
+
+
+                    let polyline = L.polyline(coordinates, {color: '#f67'}).addTo(mymap);
+                    mymap.fitBounds(polyline.getBounds());
+
+                </script>
+            </div>
+        {% endif %}
+
+        {% if route.ratings|length > 0 %}
+            <table>
+                <tr>
+                    <th>Rating</th>
+                    <th>By</th>
+                </tr>
+                {% for rating in route.ratings %}
+                <tr>
+                    <td>{{ rating.rating }}</td>
+                    <td>{{ rating.rated_by }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        {% if route.comments|length > 0 %}
+            <h3>Comments</h3>
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Comment</th>
+                    <th>Author</th>
+                    <th>#</th>
+                </tr>
+                {% for comment in route.comments %}
+                <tr>
+                    <td>{{ comment.title }}</td>
+                    <td>{{ comment.comment }}</td>
+                    <td>{{ comment.commented_by }}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+
+        <a href="{% url 'route-list' %}">Back</a>
+    </body>
+</HTML>
