@@ -1,47 +1,44 @@
 import React from "react";
-import { Table, Container, Jumbotron } from 'reactstrap'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 
-import useSWR from 'swr'
+import {
+  Container,
+  Nav,
+  Navbar,
+} from 'react-bootstrap';
 
-const fetcher = (...args) => fetch(...args).then(res => res.json())
 
-export default function Routes() {
-  const { data, error } = useSWR('/public/routes/', fetcher)
+import Routes from './routes'
 
-  if (!data || error) {
-    return <p>Loading...</p>
-  }
-
+export default function App() {
   return (
     <>
+    <Navbar bg="light" expand="lg">
       <Container>
-        <Jumbotron>
-          <h1 className="display-3">Lets Cycle</h1>
-          <p className="lead">
-            An app for cycling and having fun :)
-          </p>
-        </Jumbotron>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Route Name</th>
-              <th>Level</th>
-              <th>Avg Rating</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((route, index) => {
-              return (
-                <tr key={index}>
-                  <td>{route.name}</td>
-                  <td>{route.level}</td>
-                  <td>{route.average_rating}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </Table>
+        <Navbar.Brand href="#home">letscycle</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link href="/about">About</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
       </Container>
+    </Navbar>
+    <Router>
+      <div>
+
+        <Switch>
+          <Route path="/">
+            <Routes />
+          </Route>
+
+        </Switch>
+      </div>
+    </Router>
     </>
-  )
+  );
 }
