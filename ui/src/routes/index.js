@@ -1,5 +1,10 @@
 import React from "react";
-import { Table, Container, Jumbotron } from 'react-bootstrap'
+import {
+  Table,
+  Container,
+  Jumbotron,
+  Nav
+} from 'react-bootstrap'
 
 import useSWR from 'swr'
 
@@ -33,7 +38,7 @@ export default function Routes() {
             {data.map((route, index) => {
               return (
                 <tr key={index}>
-                  <td>{route.name}</td>
+                  <td><Nav.Link href={`/edit/${route.id}`}>{route.name}</Nav.Link></td>
                   <td>{route.level}</td>
                   <td>{route.average_rating}</td>
                 </tr>
