@@ -14,5 +14,4 @@ urlpatterns = [
     path('routes/<int:route_id>/comments/', CommentList.as_view(), name='comment-list'),
     path('routes/<int:route_id>/comments/<int:pk>/', CommentDetail.as_view(), name='comment-detail'),
 
-
 ]

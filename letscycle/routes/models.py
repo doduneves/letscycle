@@ -6,13 +6,14 @@ from django.utils.translation import gettext as _
 from datetime import datetime
 
 class Route(models.Model):
-    class Level(models.IntegerChoices):
-        BEGINNER = 1, _('Beginner')
-        REGULAR = 2, _('Regular')
-        PROFESSIONAL = 3, _('Professional')
+    LEVEL_CHOICES = (
+        (1, 'Beginner'),
+        (2, 'Regular'),
+        (3, 'Professional'),
+    )
 
     name: str = models.CharField(max_length=255)
-    level: str = models.IntegerField(choices=Level.choices)
+    level: str = models.IntegerField(choices=LEVEL_CHOICES)
     created_at: datetime = models.DateTimeField(auto_now_add=True)
 
     creator: User = models.ForeignKey(User, on_delete=models.CASCADE)
