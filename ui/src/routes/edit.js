@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, Col, Container, Form, Jumbotron, Row } from 'react-bootstrap'
+import { Button, Col, Container, Form, Jumbotron, Nav, Row } from 'react-bootstrap'
+import { MapContainer, TileLayer, Polyline } from 'react-leaflet'
 import { useParams } from "react-router-dom";
 import Moment from 'moment'
 
@@ -12,7 +13,7 @@ export default function EditRoute() {
     const { data, error } = useSWR('/public/routes/' + id, fetcher)
 
     const [route, setRoute] = useState({})
-
+    const [coordinates, setCoordinates] = useState([])
 
     useEffect(() => {
         setRoute({
@@ -21,7 +22,17 @@ export default function EditRoute() {
             average_rating: data ? data.average_rating : '',
             created_at: data ? Moment(data.created_at).format('MM/DD/YYYY') : '',
             creator: data ? data.creator : '',
-        });
+            coordinates: data ? data.coordinates : [],
+        })
+
+        if(data){
+            const latlong = data.coordinates.map((coord, _index) => {
+                return [coord.latitude, coord.longitude]
+            })
+
+            setCoordinates(latlong)
+        }
+
     }, [data])
 
 
@@ -35,10 +46,13 @@ export default function EditRoute() {
             ...prevState,
             [name]: value
           }));
-
     }
 
-    const handleOnSubmit = (event) => {}
+    console.log(route)
+    console.log(coordinates[0])
+
+    const handleOnSubmit = (event) => {
+    }
 
     return (
         <>
@@ -96,15 +110,34 @@ export default function EditRoute() {
                                 defaultValue={route.creator}
                             />
                         </Form.Group>
-                        <Button variant="primary" type="submit" className="submit-btn">
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            className="submit-btn"
+                            disabled
+                        >
                         Submit
                         </Button>
+                        <Nav.Link href="/">Back</Nav.Link>
                     </Form>
                 </Col>
-                <Col xs={3}>
+                <Col xs={6}>
                     <h2>Map</h2>
+                    {
+                    (coordinates.length > 0) ?
+                    <MapContainer center={coordinates[0]} zoom={13} scrollWheelZoom={true}>
+                        <TileLayer
+                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+
+                        <Polyline pathOptions={{color: '#f67'}} positions={coordinates} />
+                    </MapContainer> :
+                    <span>No coordinates on this route</span>
+                    }
                 </Col>
                 </Row>
+
 
                 </div>
             </Jumbotron>

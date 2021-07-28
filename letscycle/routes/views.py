@@ -40,15 +40,6 @@ class RouteChildListCreateAPIView(generics.ListCreateAPIView):
 class RouteList(generics.ListCreateAPIView):
     queryset: QuerySet = Route.objects.all()
     serializer_class: ModelSerializer = RouteSerializer
-    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
-
-
-    def list(self, request):
-        serializer: ModelSerializer = RouteSerializer(self.get_queryset(), many=True)
-        if request.accepted_renderer.format == 'html':
-            return Response({'routes': serializer.data }, template_name='routes/list.html')
-
-        return Response(serializer.data)
 
 
     def create(self, request, *args, **kwargs):
@@ -78,17 +69,6 @@ class RouteList(generics.ListCreateAPIView):
 class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset: QuerySet = Route.objects.all()
     serializer_class: ModelSerializer = RouteSerializer
-    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
-    template_name = 'routes/read.html'
-
-    def retrieve(self, request, *args, **kwargs):
-        route: Route = self.get_object()
-        serializer: ModelSerializer = self.get_serializer(route)
-        if request.accepted_renderer.format == 'html':
-            return Response({'route': serializer.data }, template_name='routes/read.html')
-
-        return Response(serializer.data)
-
 
 
 class CoordinateList(generics.ListCreateAPIView):
